@@ -240,3 +240,15 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/Utah/g_download.pyc
+/download
+/extract
+/prev
+/prev2
+/sf_working
+/upload
+/Utah/__pycache__
+/client_secrets.json
+/mycreds.txt
+/Utah/mycreds.txt
+/Utah/requirements.txt

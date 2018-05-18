@@ -7,36 +7,16 @@ import shutil
 
 
 def download_file_and_extract(f, download_folder, extract_folder):
-    print('Downloading: {0}'.format(f['title']))
+    print('Downloading file: {0}'.format(f['title']))
     try:
         path = os.path.join(download_folder, f['title'])
         f.GetContentFile(path)
         zf = ZipFile(path)
         zf.extractall(path=extract_folder)
         zf.close()
-        # extracted_folder inside extract_folder
-        extracted_folder = [x for x in os.listdir(extract_folder)
-                            if os.path.isdir(
-                                os.path.join(extract_folder, x))][0]
-        extracted_files = os.listdir(
-            os.path.join(extract_folder, extracted_folder))
     except Exception as e:
         print('Error {0} at {1}'.format(e, f['embedLink']))
         return
-    for ext_f in extracted_files:
-        try:
-            shutil.move(
-                os.path.join(extract_folder, extracted_folder, ext_f),
-                extract_folder)
-        except Exception as e:
-            print('{0} while trying to move {1}, {2}'.format(
-                e, extracted_folder, ext_f))
-            continue
-    try:
-        shutil.rmtree(os.path.join(extract_folder, extracted_folder))
-    except Exception as e:
-        print('Error {0} while trying to rm {1}'.format(
-            os.path.join(extract_folder, extracted_folder)))
     print('Downloading and extracting is over: {0}'.format(f['embedLink']))
 
 
@@ -55,6 +35,10 @@ def list_folder(parent, drive, download_folder, extract_folder, is_top=True):
                 list_folder(f['id'], drive, is_top=False)
             else:
                 download_file_and_extract(f, download_folder, extract_folder)
+        # Return list of extracted files
+        filelist = [f for f in listdir(extract_folder)]
+        return (filelist)
+
     except Exception as e:
         print(e)
 

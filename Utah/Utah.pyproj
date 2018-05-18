@@ -22,6 +22,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ggd.py" />
+    <Compile Include="g_download.py" />
     <Compile Include="Utah.py" />
   </ItemGroup>
   <PropertyGroup>
