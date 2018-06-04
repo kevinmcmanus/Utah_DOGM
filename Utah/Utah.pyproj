@@ -24,6 +24,9 @@
   <ItemGroup>
     <Compile Include="ggd.py" />
     <Compile Include="g_download.py" />
+    <Compile Include="agol.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utah.py" />
   </ItemGroup>
   <PropertyGroup>

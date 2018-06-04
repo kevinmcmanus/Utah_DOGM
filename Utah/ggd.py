@@ -3,8 +3,10 @@ from shutil import copy, copytree, rmtree, copy2, make_archive
 from zipfile import ZipFile
 import fiona
 import geopandas as gpd
+from arcgis.gis import GIS
 
 from g_download import get_files
+from agol import uploadArc
 
 #DOWNLOADING_FOLDER = 'C:/OGCC/UT/ZipDown'
 #EXTRACTING_FOLDER = 'C:/OGCC/UT/Well Files'
@@ -93,7 +95,7 @@ def main():
     if os.path.isdir(UPLOADING_FOLDER):
         rmtree(UPLOADING_FOLDER)
     elif os.path.exists(UPLOADING_FOLDER):
-        print('Extract folder not exists or not valid')
+        print('Upload folder not exists or not valid')
         return
     os.mkdir(UPLOADING_FOLDER)
     # recreate the back up folder
@@ -104,13 +106,21 @@ def main():
     # copy the files into the prev folder
     copytree(EXTRACTING_FOLDER, PREVIOUS_FOLDER)
 
+    #arcGis creds:
+    try:
+        gis = GIS(profile = "UtDOGM_Nightly_Profile")
+    except:
+        gis = GIS(url = "https://interfacegis.maps.arcgis.com/", username = input("Username: "), password = getpass(), profile = "UtDOGM_Nightly_Profile")
+
+
+
     shapefiles = get_files(SLUG, DOWNLOADING_FOLDER, EXTRACTING_FOLDER)
     
     #add links and zip up each file
     for sf in shapefiles:
         AddLinks(sf, EXTRACTING_FOLDER, WORKING_FOLDER)
         ReZip(WORKING_FOLDER, sf, UPLOADING_FOLDER)
-
+        uploadArc(gis, UPLOADING_FOLDER, sf, 'Nightly DOGM')
 
 if __name__ == '__main__':
     main()

@@ -36,7 +36,7 @@ def list_folder(parent, drive, download_folder, extract_folder, is_top=True):
             else:
                 download_file_and_extract(f, download_folder, extract_folder)
         # Return list of extracted files
-        filelist = [f for f in listdir(extract_folder)]
+        filelist = [f for f in os.listdir(extract_folder)]
         return (filelist)
 
     except Exception as e:
