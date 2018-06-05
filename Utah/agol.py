@@ -6,7 +6,6 @@ from arcgis.gis import GIS
 from arcgis.features import FeatureLayerCollection
 
 def uploadArc(gis, ziproot, sf_name, folder_name):
-    #print("\nUpload UtDOGM files to ArcGIS Online directory at: " + time.asctime() + "\n\n")
 
     gis.content.create_folder(folder_name)
     zipname = os.path.join(ziproot,sf_name)+'.zip'

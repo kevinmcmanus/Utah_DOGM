@@ -8,18 +8,45 @@ from arcgis.gis import GIS
 from g_download import get_files
 from agol import uploadArc
 
-#DOWNLOADING_FOLDER = 'C:/OGCC/UT/ZipDown'
-#EXTRACTING_FOLDER = 'C:/OGCC/UT/Well Files'
-#PREVIOUS_FOLDER = 'C:/OGCC/UT/PrevWellFiles'
+#folder where all the action takes place
+WORKFOLDER = '../Utah_Nightly'
 
-DOWNLOADING_FOLDER = './download'
-UPLOADING_FOLDER = './upload'
-EXTRACTING_FOLDER = './extract'
-WORKING_FOLDER = './sf_working'
-PREVIOUS_FOLDER = './prev'
-PREVIOUS_FOLDER2 = './prev2'
+DOWNLOADING_FOLDER = os.path.join(WORKFOLDER,'download')
+UPLOADING_FOLDER   = os.path.join(WORKFOLDER,'upload')
+EXTRACTING_FOLDER  = os.path.join(WORKFOLDER,'extract')
+WORKING_FOLDER     = os.path.join(WORKFOLDER,'sf_working')
+PREVIOUS_FOLDER    = os.path.join(WORKFOLDER,'prev')
+
 
 SLUG = '0ByStJjVZ7c7mM2hOYmF4ZENpNVE'
+
+#create necessary folders for process
+def create_dirs():
+    if not os.path.exists(WORKFOLDER):
+        os.mkdir(WORKFOLDER)
+    assert(os.path.isdir(WORKFOLDER)) # might be plain ole file
+
+    #clear out and remake the other folders
+    if os.path.isdir(PREVIOUS_FOLDER):
+        rmtree(PREVIOUS_FOLDER)
+
+    if not os.path.isdir(EXTRACTING_FOLDER):
+        os.mkdir(EXTRACTING_FOLDER)
+    copytree(EXTRACTING_FOLDER, PREVIOUS_FOLDER)
+
+    if os.path.isdir(UPLOADING_FOLDER):
+        rmtree(UPLOADING_FOLDER)
+    if os.path.isdir(DOWNLOADING_FOLDER):
+        rmtree(DOWNLOADING_FOLDER)
+    if os.path.isdir(WORKING_FOLDER):
+        rmtree(WORKING_FOLDER)
+
+    os.mkdir(UPLOADING_FOLDER)
+    os.mkdir(DOWNLOADING_FOLDER)
+    os.mkdir(WORKING_FOLDER)
+
+    pass # out of create_dirs
+
 
 def AddLinks(sf_name, src_dir, dest_dir):
     """
@@ -30,6 +57,7 @@ def AddLinks(sf_name, src_dir, dest_dir):
         src_dir: directory (folder) that contains sf_name
         dest_dir: directory (folder) where the modified shapefile is to be written
     """
+    # variables to keep track of where things are coming and going:
     sf_path_in = os.path.join(src_dir, sf_name) # path to input shapefile directory
     sf_path_basename = os.path.join(sf_path_in, sf_name) # basename of the shapefile components
     sf_path_out = os.path.join(dest_dir, sf_name) # path to output shapefile directory
@@ -84,39 +112,21 @@ def ReZip(work_dir, sf_name, out_dir):
 
 
 def main():
+    
+    # set up the directories
+    create_dirs()
 
-    if not os.path.isdir(DOWNLOADING_FOLDER):
-        print('Download folder not exists or not valid')
-        return
-    if not os.path.isdir(EXTRACTING_FOLDER):
-        print('Extract folder not exists or not valid')
-        return
-    # blow away & recreate the uploading folder
-    if os.path.isdir(UPLOADING_FOLDER):
-        rmtree(UPLOADING_FOLDER)
-    elif os.path.exists(UPLOADING_FOLDER):
-        print('Upload folder not exists or not valid')
-        return
-    os.mkdir(UPLOADING_FOLDER)
-    # recreate the back up folder
-    if os.path.exists(PREVIOUS_FOLDER2):
-        rmtree(PREVIOUS_FOLDER2)
-    copytree(PREVIOUS_FOLDER, PREVIOUS_FOLDER2)
-    rmtree(PREVIOUS_FOLDER)
-    # copy the files into the prev folder
-    copytree(EXTRACTING_FOLDER, PREVIOUS_FOLDER)
-
-    #arcGis creds:
+    #get the arcGis creds:
     try:
         gis = GIS(profile = "UtDOGM_Nightly_Profile")
     except:
         gis = GIS(url = "https://interfacegis.maps.arcgis.com/", username = input("Username: "), password = getpass(), profile = "UtDOGM_Nightly_Profile")
 
 
-
+    #get the shapefiles to mash on
     shapefiles = get_files(SLUG, DOWNLOADING_FOLDER, EXTRACTING_FOLDER)
     
-    #add links and zip up each file
+    #add links, zip up and upload each file
     for sf in shapefiles:
         AddLinks(sf, EXTRACTING_FOLDER, WORKING_FOLDER)
         ReZip(WORKING_FOLDER, sf, UPLOADING_FOLDER)

@@ -252,3 +252,6 @@ ModelManifest.xml
 /mycreds.txt
 /Utah/mycreds.txt
 /Utah/requirements.txt
+/Utah_Nightly/extract
+/Utah_Nightly
+/Utah/client_secrets.json

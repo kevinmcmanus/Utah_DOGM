@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>4c8c9586-33e5-4ee3-a721-92bcd2d41808</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Utah.py</StartupFile>
+    <StartupFile>ggd.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -27,7 +27,6 @@
     <Compile Include="agol.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utah.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
